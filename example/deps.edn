@@ -1,0 +1,4 @@
+{:paths ["src"]
+
+ :deps {pathom-pedestal {:mvn/version "0.1.0-SNAPSHOT"}
+        org.clojure/test.check {:mvn/version "0.10.0-alpha3"}}}
