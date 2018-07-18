@@ -66,7 +66,6 @@
 
 (def routes
   (route/expand-routes (pathom-routes {:oge? true :parser parser})))
-      ; (conj ["/" :get respond-hello :route-name :greet]))))
 
 (def port 8890)
 
