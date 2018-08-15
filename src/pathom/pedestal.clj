@@ -85,10 +85,16 @@
     {:content-security-policy-settings "default-src * 'unsafe-inline'"}))
 
 (defn default-routes [options]
-  (let [{:keys [path parser]
+  (let [{:keys [path parser extra-interceptors]
          :or {path default-path}}
-        options]
-    #{[path :post [(body-params/body-params) http/transit-body (pathom-response parser)] :route-name ::graph-api]}))
+        options
+        default-interceptors [(body-params/body-params) http/transit-body]
+        handler (pathom-response parser)
+        interceptors (-> default-interceptors
+                         (concat extra-interceptors)
+                         (as-> <> (into [] <>))
+                         (conj handler))]
+    #{[path :post interceptors :route-name ::graph-api]}))
 
 
 (defn pathom-routes [options]
