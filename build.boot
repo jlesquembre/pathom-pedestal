@@ -1,5 +1,5 @@
 (def project 'pathom-pedestal)
-(def version "0.1.0-SNAPSHOT")
+(def version "0.1.1-SNAPSHOT")
 
 (set-env! :resource-paths #{"resources" "src"}
           :source-paths   #{"test"}
@@ -8,7 +8,7 @@
                             [io.pedestal/pedestal.route   "0.5.4"]
                             [io.pedestal/pedestal.jetty   "0.5.4"]
                             [hickory "0.7.1"]
-                            [com.wsscode/pathom "2.0.9"]
+                            [com.wsscode/pathom "2.1.1"]
 
                             [adzerk/boot-test "1.2.0" :scope "test"]
                             [adzerk/bootlaces "0.1.13" :scope "test"]])
