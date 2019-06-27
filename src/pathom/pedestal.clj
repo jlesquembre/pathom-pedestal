@@ -9,6 +9,10 @@
 
    [ring.util.response :as ring-resp]
 
+   [com.wsscode.pathom.core :as p]
+   [com.wsscode.pathom.connect :as pc]
+   [com.wsscode.pathom.profile :as pp]
+
    [hickory.core :as h]
    [hickory.select :as s]
    [hickory.zip :refer [hickory-zip]]
@@ -122,6 +126,27 @@
           [asset-path' :get asset-get-handler :route-name ::pathom-get-assets]
           [asset-path' :head asset-head-handler :route-name ::pathom-head-assets])))))
 
+
+(defn make-parser
+  "Helper to create a pathom parser.
+   extra-env can be used to inject dependencies required by the queries (like
+   a database connection)"
+  [app-registry & {:keys [extra-env]}]
+  (p/parser {::p/env     (merge
+                           extra-env
+                           {::p/reader               [p/map-reader
+                                                      pc/reader2
+                                                      pc/ident-reader
+                                                      p/env-placeholder-reader]
+                            ::pc/resolver-dispatch   pc/resolver-dispatch-embedded
+                            ::pc/mutate-dispatch     pc/mutation-dispatch-embedded
+                            ::p/placeholder-prefixes #{">"}
+                            ::db                     (atom {})})
+             ::p/mutate  pc/mutate
+             ::p/plugins [(pc/connect-plugin {::pc/register app-registry})
+                          p/error-handler-plugin
+                          p/request-cache-plugin
+                          pp/profile-plugin]}))
 
 (comment
 
