@@ -10,8 +10,8 @@ A library to integrate [pathom](https://github.com/wilkerlucio/pathom) and
 See the example directory. To run the example:
 
 ```
-clj -m "example"
+clj -A:dev
 ```
 
-go to http://localhost:8890/oge and try some query.
-E.g.: `[{[:tv-show/id :bcs] [:tv-show/title]}]`
+Go to http://localhost:8890/oge and try some query. E.g.:
+`[{[:tv-show/id :bcs] [:tv-show/title]}]`

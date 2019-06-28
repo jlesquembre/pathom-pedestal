@@ -1,13 +1,13 @@
-(ns example
+(ns example.core
  (:require
    [io.pedestal.http :as http]
    [io.pedestal.http.route :as route]
 
-   [com.wsscode.pathom.core :as p]
+   ; [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc]
-   [com.wsscode.pathom.profile :as pp]
+   ; [com.wsscode.pathom.profile :as pp]
 
-   [pathom.pedestal :refer [pathom-routes]]))
+   [pathom.pedestal :refer [pathom-routes make-parser]]))
 
 (def tv-shows
   {:rm  #:tv-show{:id :rm
@@ -29,38 +29,18 @@
    :ygritte #:character{:name "Ygritte" :tv-show-id :got}})
 
 
-; initialize a dispatch function
-(defmulti resolver-fn pc/resolver-dispatch)
-
-; initialize indexes
-(def indexes (atom {}))
-
-; this creates a factory that will add a new method on the resolver-fn and add it to the indexes
-(def defresolver (pc/resolver-factory resolver-fn indexes))
-
-(defresolver `show-by-id
+(pc/defresolver show-by-id [env {:keys [tv-show/id]}]
   {::pc/input  #{:tv-show/id}
    ::pc/output [:tv-show/id :tv-show/title :tv-show/character-ids]}
-  (fn [env {:keys [tv-show/id]}]
-    (get tv-shows id)))
+  (get tv-shows id))
 
-(defresolver `show-characters
+(pc/defresolver show-characters [env {:keys [tv-show/character-ids]}]
   {::pc/input #{:tv-show/character-ids}
    ::pc/output [{:tv-show/characters [:character/id :character/name :character/tv-show-id]}]}
-  (fn [env {:keys [tv-show/character-ids]}]
-    {:tv-show/characters (vals (select-keys characters character-ids))}))
+  {:tv-show/characters (vals (select-keys characters character-ids))})
 
-(def parser
-  (p/parser {::p/plugins
-             [(p/env-plugin
-                {::p/reader             [p/map-reader
-                                         pc/all-readers
-                                         p/env-placeholder-reader]
-                 ::pc/resolver-dispatch resolver-fn
-                 ::p/placeholder-prefixes #{">"}
-                 ::pc/indexes           @indexes})
-              pp/profile-plugin]}))
 
+(def parser (make-parser [show-by-id show-characters]))
 
 ;; Pedestal
 
@@ -79,5 +59,5 @@
   (http/start (create-server)))
 
 (defn -main [& args]
-  (prn (str "Starting server on http://localhost:" port))
+  (prn (str "Open http://localhost:" port "/oge"))
   (start))
