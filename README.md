@@ -1,7 +1,6 @@
 # pathom-pedestal
 
-[![Clojars Project](https://img.shields.io/clojars/v/pathom-pedestal.svg)](https://clojars.org/pathom-pedestal)
-
+[![Clojars Project](https://img.shields.io/clojars/v/lafuente/pathom-pedestal.svg)](https://clojars.org/lafuente/pathom-pedestal)
 [![cljdoc badge](https://cljdoc.org/badge/lafuente/pathom-pedestal)](https://cljdoc.org/d/lafuente/pathom-pedestal/CURRENT)
 
 A library to integrate [pathom](https://github.com/wilkerlucio/pathom) and
