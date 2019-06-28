@@ -1,6 +1,5 @@
 (ns pathom.pedestal
  (:require
-   [clojure.zip :as zip]
    [clojure.java.io :as io]
 
    [io.pedestal.http :as http]
@@ -13,11 +12,10 @@
    [com.wsscode.pathom.connect :as pc]
    [com.wsscode.pathom.profile :as pp]
 
-   [hickory.core :as h]
-   [hickory.select :as s]
-   [hickory.zip :refer [hickory-zip]]
-   [hickory.render :refer [hickory-to-html]])
+   [pathom.pedestal.jsoup :refer [attr-update]])
 
+ (:import
+   [org.jsoup Jsoup])
  (:gen-class))
 
 
@@ -26,55 +24,20 @@
 (def ^:private default-asset-path "/assets/oge")
 
 
-(defn or-selector
-  "Takes any number of selectors and returns a selector that returns the first
-   selector that is satisfied by the zip-loc given"
-  [selectors]
-  (fn [zip-loc]
-    (loop [xs (seq selectors)]
-      (if-let [sel (first xs)]
-        (if (sel zip-loc)
-          sel
-          (recur (next xs)))))))
+(defn index-html
+  "Returns index.html, updating urls to the linked resources"
+  []
+  (let [doc (-> "oge/index.html" io/resource slurp Jsoup/parse)
+        prepend #(str default-asset-path "/" %)]
+    (-> doc
+      (.select "link[type=\"text/css\"]")
+      (attr-update "href" prepend))
+    (-> doc
+      (.select "script")
+      (attr-update "src" prepend))
 
-
-(defn render-template
-  "Takes a zip location (usually the root) and a map of selectors to functions.
-   For every matching selector, applies the function.
-   Returns the zip root, once reaches the end"
-  [hzip-loc forms]
-  (let [selectors (keys forms)
-        selector-fn (or-selector selectors)]
-    (loop [loc hzip-loc]
-      (if (zip/end? loc)
-        (zip/root loc)
-        (if-let [sel (selector-fn loc)]
-          (let [f (get forms sel)]
-            (recur (zip/next (f loc))))
-          (recur (zip/next loc)))))))
-
-
-(defn- prepend-attr
-  [m k x]
-  (update-in m [:attrs k] #(str x "/" %)))
-
-(defn oge-ide-response
-  [options]
-  (let [stylesheet-selector(s/and (s/tag :link) (s/attr :rel #(= % "stylesheet")))
-
-        forms {stylesheet-selector #(zip/edit % prepend-attr :href default-asset-path)
-               (s/tag :script) #(zip/edit % prepend-attr :src default-asset-path)}
-
-        index (-> "oge/index.html"
-                  io/resource
-                  slurp
-                  h/parse
-                  h/as-hickory
-                  hickory-zip
-                  (render-template forms)
-                  hickory-to-html)]
     {:status 200
-     :body index
+     :body (.html doc)
      :headers {"Content-Type" "text/html"}}))
 
 
@@ -111,7 +74,7 @@
       base-routes
       (let [asset-path' (str asset-path "/*path")
 
-            index-handler (let [index-response (oge-ide-response options)]
+            index-handler (let [index-response (index-html)]
                             (fn [request]
                               index-response))
 
@@ -147,18 +110,3 @@
                           p/error-handler-plugin
                           p/request-cache-plugin
                           pp/profile-plugin]}))
-
-(comment
-
-  ; TODO maybe use a vector of vectors, with [MATCHER FUNCTION NEXT-FN] where NEXT-FN is optional, (zip/next by default)
-
-  (let [data (-> "oge/index.html"
-                 io/resource
-                 slurp
-                 h/parse
-                 h/as-hickory
-                 hickory-zip)
-
-        forms {(s/and (s/tag :link) (s/attr :rel #(= % "stylesheet"))) #(zip/edit % prepend-attr :href "PREPEND")
-               (s/tag :div) identity}]
-    (render-template data forms)))

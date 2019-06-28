@@ -2,8 +2,7 @@
  ["src" "resources"]
 
  :deps
- {
-  hickory {:mvn/version "0.7.1"}
+ {org.jsoup/jsoup {:mvn/version "1.11.3"}
   com.wsscode/pathom {:mvn/version "2.2.16"}}
 
  :aliases
