@@ -3,9 +3,7 @@
    [io.pedestal.http :as http]
    [io.pedestal.http.route :as route]
 
-   ; [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc]
-   ; [com.wsscode.pathom.profile :as pp]
 
    [pathom.pedestal :refer [pathom-routes make-parser]]))
 

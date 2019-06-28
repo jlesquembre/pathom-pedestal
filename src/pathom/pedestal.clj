@@ -19,7 +19,7 @@
  (:gen-class))
 
 
-(def ^:private default-path "/oge")
+(def ^:private default-oge-url "/oge")
 
 (def ^:private default-asset-path "/assets/oge")
 
@@ -52,27 +52,39 @@
     {:content-security-policy-settings "default-src * 'unsafe-inline'"}))
 
 (defn default-routes [options]
-  (let [{:keys [path parser extra-interceptors]
-         :or {path default-path}}
+  (let [{:keys [oge-url parser interceptors]
+         :or {oge-url default-oge-url}}
         options
         default-interceptors [(body-params/body-params) http/transit-body]
         handler (pathom-response parser)
-        interceptors (-> default-interceptors
-                         (concat extra-interceptors)
-                         (as-> <> (into [] <>))
-                         (conj handler))]
-    #{[path :post interceptors :route-name ::graph-api]}))
+        inter (-> default-interceptors
+                  (concat interceptors)
+                  (as-> <> (into [] <>))
+                  (conj handler))]
+    #{[oge-url :post inter :route-name ::graph-api]}))
 
 
-(defn pathom-routes [options]
-  (let [{:keys [path asset-path oge?]
-         :or {path default-path
-              asset-path default-asset-path}}
+(defn pathom-routes
+  "Valid options are:
+
+   :parser        pathom parser. Mandatory.
+
+   :oge-url       Path for oge UI (GET requests) and to listen for queries
+                  (POST requests). \"/oge\" by default.
+
+   :oge?          Enable oge UI. False by default.
+
+   :interceptors  Extra interceptors to append to the endpoint responding to
+                  EQL queries
+   "
+  [options]
+  (let [{:keys [oge-url oge?]
+         :or {oge-url default-oge-url}}
         options
         base-routes (default-routes options)]
     (if-not oge?
       base-routes
-      (let [asset-path' (str asset-path "/*path")
+      (let [asset-path' (str default-asset-path "/*path")
 
             index-handler (let [index-response (index-html)]
                             (fn [request]
@@ -85,7 +97,7 @@
                                     asset-get-handler
                                     (assoc :body nil))]
         (conj base-routes
-          [path :get [(custom-secure-headers) index-handler] :route-name ::graphiql-ide-index]
+          [oge-url :get [(custom-secure-headers) index-handler] :route-name ::graphiql-ide-index]
           [asset-path' :get asset-get-handler :route-name ::pathom-get-assets]
           [asset-path' :head asset-head-handler :route-name ::pathom-head-assets])))))
 
