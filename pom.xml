@@ -3,8 +3,31 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>lafuente</groupId>
   <artifactId>pathom-pedestal</artifactId>
-  <version>0.1.1</version>
+  <version>0.1.2-SNAPSHOT</version>
   <name>pathom-pedestal</name>
+
+  <description>Pedestal helpers for Pathom</description>
+  <url>https://github.com/jlesquembre/pathom-pedestal</url>
+  <licenses>
+    <license>
+      <name>Eclipse Public License</name>
+      <url>http://www.eclipse.org/legal/epl-v10.html</url>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <name>José Luis Lafuente</name>
+    </developer>
+  </developers>
+
+  <scm>
+    <url>https://github.com/jlesquembre/pathom-pedestal</url>
+    <connection>scm:git:git://github.com/jlesquembre/pathom-pedestal.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/jlesquembre/pathom-pedestal.git</developerConnection>
+  </scm>
+
+
   <dependencies>
     <dependency>
       <groupId>org.clojure</groupId>
@@ -22,6 +45,8 @@
       <version>2.2.16</version>
     </dependency>
   </dependencies>
+
+
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
@@ -29,13 +54,27 @@
         <directory>resources</directory>
       </resource>
     </resources>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+        <configuration>
+          <tagNameFormat>v@{project.version}</tagNameFormat>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
+
+
   <repositories>
     <repository>
       <id>clojars</id>
       <url>https://repo.clojars.org/</url>
     </repository>
   </repositories>
+
+
   <distributionManagement>
     <repository>
       <id>clojars</id>
@@ -44,16 +83,4 @@
     </repository>
   </distributionManagement>
 
-  <!-- Optional extras for Clojars -->
-  <description>Pedestal helpers for Pathom</description>
-  <url>https://github.com/jlesquembre/pathom-pedestal</url>
-  <licenses>
-    <license>
-      <name>Eclipse Public License 1.0</name>
-      <url>http://opensource.org/licenses/eclipse-1.0.php</url>
-    </license>
-  </licenses>
-  <scm>
-    <url>https://github.com/jlesquembre/pathom-pedestal</url>
-  </scm>
 </project>
