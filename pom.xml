@@ -21,6 +21,10 @@
     </developer>
   </developers>
 
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+   </properties>
+
   <scm>
     <url>https://github.com/jlesquembre/pathom-pedestal</url>
     <connection>scm:git:git://github.com/jlesquembre/pathom-pedestal.git</connection>
@@ -51,6 +55,9 @@
   <build>
     <sourceDirectory>src</sourceDirectory>
     <resources>
+      <resource>
+        <directory>src</directory>
+      </resource>
       <resource>
         <directory>resources</directory>
       </resource>
