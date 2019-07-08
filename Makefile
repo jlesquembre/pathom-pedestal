@@ -7,6 +7,7 @@ deploy:
 	clojure -Spom
 	mvn release:prepare
 	git fetch
+	mvn release:perform
 
 deploy-dry:
 	clojure -Spom
