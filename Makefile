@@ -16,5 +16,5 @@ clean:
 	mvn release:clean
 
 jar:
-	rm -r target
+	rm -rf target
 	mvn package
