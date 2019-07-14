@@ -51,6 +51,10 @@
   (http/create-server
    {::http/routes routes
     ::http/type   :jetty
+    ;; TODO temporary hack for testing it, remove it
+    ::http/secure-headers nil
+    ; ::http/cors ::http/dev-allow-origin
+    ::http/allowed-origins ["http://localhost:9086" "*" "http://localhost:8890"]
     ::http/port   port}))
 
 (defn start []
