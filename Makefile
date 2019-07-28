@@ -1,4 +1,4 @@
-.PHONY: pom-deps deploy deploy-dry clean jar
+.PHONY: pom-deps deploy deploy-dry clean jar compile-viz
 
 pom-deps:
 	clojure -Spom
@@ -17,3 +17,8 @@ clean:
 jar:
 	rm -rf target
 	mvn package
+
+compile-viz:
+	cd pathom-viz && npx shadow-cljs release standalone
+	mkdir -p resources/pathom-viz
+	cp -rL ./pathom-viz/standalone/assets/* resources/pathom-viz

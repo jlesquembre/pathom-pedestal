@@ -10,31 +10,32 @@
 
    [com.wsscode.pathom.core :as p]
    [com.wsscode.pathom.connect :as pc]
-   [com.wsscode.pathom.profile :as pp]
 
-   [pathom.pedestal.jsoup :refer [attr-update]])
+   [pathom.pedestal.jsoup :refer [attr-update relative-url?]])
 
  (:import
    [org.jsoup Jsoup])
  (:gen-class))
 
 
-(def ^:private default-oge-url "/oge")
+(def ^:private default-pathom-url "/pathom")
 
-(def ^:private default-asset-path "/assets/oge")
+(def ^:private default-asset-path "/assets/pathom-viz")
 
 
 (defn index-html
   "Returns index.html, updating urls to the linked resources"
   []
-  (let [doc (-> "oge/index.html" io/resource slurp Jsoup/parse)
-        prepend #(str default-asset-path "/" %)]
+  (let [doc (-> "pathom-viz/index.html" io/resource slurp Jsoup/parse)
+        prepend #(str default-asset-path "/" %)
+        prepend-relative #(cond-> % (relative-url? %) prepend)]
+
     (-> doc
-      (.select "link[type=\"text/css\"]")
-      (attr-update "href" prepend))
+      (.select "link[rel=\"stylesheet\"]")
+      (attr-update "href" prepend-relative))
     (-> doc
       (.select "script")
-      (attr-update "src" prepend))
+      (attr-update "src" prepend-relative))
 
     {:status 200
      :body (.html doc)
@@ -52,8 +53,8 @@
     {:content-security-policy-settings "default-src * 'unsafe-inline'"}))
 
 (defn default-routes [options]
-  (let [{:keys [oge-url parser interceptors]
-         :or {oge-url default-oge-url}}
+  (let [{:keys [pathom-url parser interceptors]
+         :or {pathom-url default-pathom-url}}
         options
         default-interceptors [(body-params/body-params) http/transit-body]
         handler (pathom-response parser)
@@ -61,7 +62,7 @@
                   (concat interceptors)
                   (as-> <> (into [] <>))
                   (conj handler))]
-    #{[oge-url :post inter :route-name ::graph-api]}))
+    #{[pathom-url :post inter :route-name ::graph-api]}))
 
 
 (defn pathom-routes
@@ -69,20 +70,20 @@
 
    :parser        pathom parser. Mandatory.
 
-   :oge-url       Path for oge UI (GET requests) and to listen for queries
-                  (POST requests). \"/oge\" by default.
+   :pathom-url    Path for pathom viz UI (GET requests) and to listen for queries
+                  (POST requests). \"/pathom\" by default.
 
-   :oge?          Enable oge UI. False by default.
+   :pathom-viz?   Enable pathom viz UI. False by default.
 
    :interceptors  Extra interceptors to append to the endpoint responding to
                   EQL queries
    "
   [options]
-  (let [{:keys [oge-url oge?]
-         :or {oge-url default-oge-url}}
+  (let [{:keys [pathom-url pathom-viz?]
+         :or {pathom-url default-pathom-url}}
         options
         base-routes (default-routes options)]
-    (if-not oge?
+    (if-not pathom-viz?
       base-routes
       (let [asset-path' (str default-asset-path "/*path")
 
@@ -92,12 +93,12 @@
 
             asset-get-handler (fn [request]
                                 (ring-resp/resource-response (-> request :path-params :path)
-                                                            {:root "oge"}))
+                                                             {:root "pathom-viz"}))
             asset-head-handler #(-> %
                                     asset-get-handler
                                     (assoc :body nil))]
         (conj base-routes
-          [oge-url :get [(custom-secure-headers) index-handler] :route-name ::graphiql-ide-index]
+          [pathom-url :get [(custom-secure-headers) index-handler] :route-name ::graphiql-ide-index]
           [asset-path' :get asset-get-handler :route-name ::pathom-get-assets]
           [asset-path' :head asset-head-handler :route-name ::pathom-head-assets])))))
 
@@ -121,4 +122,5 @@
              ::p/plugins [(pc/connect-plugin {::pc/register app-registry})
                           p/error-handler-plugin
                           p/request-cache-plugin
-                          pp/profile-plugin]}))
+                          ;; TODO only for dev mode
+                          p/trace-plugin]}))

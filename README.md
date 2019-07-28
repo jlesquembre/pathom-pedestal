@@ -22,7 +22,7 @@ the
 
 
 (def routes
-  (route/expand-routes (pathom-routes {:oge? true :parser parser})))
+  (route/expand-routes (pathom-routes {:pathom-viz? true :parser parser})))
 
 (defn create-server []
   (http/create-server
@@ -46,5 +46,5 @@ See the example directory. To run the example:
 clj -A:dev
 ```
 
-Go to http://localhost:8890/oge and try some query. E.g.:
+Go to http://localhost:8890/pathom and try some query. E.g.:
 `[{[:tv-show/id :bcs] [:tv-show/title]}]`

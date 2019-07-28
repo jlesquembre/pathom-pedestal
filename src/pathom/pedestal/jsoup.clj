@@ -1,7 +1,15 @@
 (ns pathom.pedestal.jsoup
  (:import
+   [java.net URI]
    [org.jsoup.nodes Element]
    [org.jsoup.select Elements]))
+
+
+(defn relative-url? [url]
+  (cond
+    (clojure.string/starts-with? url "//") false
+    (.isAbsolute (URI. url)) false
+    :else true))
 
 
 (defprotocol AttrFn
