@@ -51,6 +51,8 @@
   (http/create-server
    {::http/routes routes
     ::http/type   :jetty
+    ; To help during pathom-viz development
+    ::http/allowed-origins ["http://localhost:8087"]
     ::http/port   port}))
 
 (defn start []
