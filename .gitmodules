@@ -1,0 +1,3 @@
+[submodule "pathom-viz"]
+	path = pathom-viz
+	url = https://github.com/jlesquembre/pathom-viz.git
