@@ -13,4 +13,10 @@
    :main-opts ["-m" "example.core"]
    :extra-deps
    {io.pedestal/pedestal.jetty   {:mvn/version "0.5.7"}
-    org.clojure/test.check {:mvn/version "0.10.0-alpha3"}}}}}
+    org.clojure/test.check {:mvn/version "0.10.0-alpha3"}}}
+  :demo
+  {:paths ["devel"]
+   :main-opts ["-m" "example.core"]
+   :extra-deps
+   {io.pedestal/pedestal.jetty   {:mvn/version "0.5.7"}
+    lafuente/pathom-pedestal     {:mvn/version "0.1.5-SNAPSHOT"}}}}}

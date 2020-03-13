@@ -21,6 +21,7 @@ jar:
 	mvn package
 
 compile-viz:
+	cd pathom-viz && npm install
 	cd pathom-viz && npx shadow-cljs release standalone
 	mkdir -p resources/pathom-viz
 	cp -rL ./pathom-viz/standalone/assets/* resources/pathom-viz

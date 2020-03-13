@@ -30,21 +30,32 @@ the
     ::http/type   :jetty
     ::http/port   8890}))
 
-(http/start (create-server)))
+(http/start (create-server))
 ```
 
-See [API docs](https://cljdoc.org/d/lafuente/pathom-pedestal/CURRENT) for a list
-of valid options
+See
+[API docs](https://cljdoc.org/d/lafuente/pathom-pedestal/CURRENT/api/pathom.pedestal#pathom-routes)
+for a list of valid options
 
 For convenience, a helper function, `make-parser`, is also provided.
 
-## Example project
+## Demo
 
-See the example directory. To run the example:
+See the example directory. To run it:
 
-```
-clj -A:dev
+```bash
+clj -A:demo
 ```
 
 Go to http://localhost:8890/pathom and try some query. E.g.:
 `[{[:tv-show/id :bcs] [:tv-show/title]}]`
+
+## Development
+
+For development, the demo can be used, but first is necessary to compile some
+dependencies:
+
+```bash
+make compile-viz  # Build web assets (with shadow-cljs)
+clj -A:dev
+```
