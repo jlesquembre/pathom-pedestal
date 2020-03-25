@@ -53,9 +53,11 @@ Go to http://localhost:8890/pathom and try some query. E.g.:
 ## Development
 
 For development, the demo can be used, but first is necessary to compile some
-dependencies:
+dependencies, provided by
+[pathom-viz](https://github.com/wilkerlucio/pathom-viz):
 
 ```bash
+git submodule update --init
 make compile-viz  # Build web assets (with shadow-cljs)
 clj -A:dev
 ```
