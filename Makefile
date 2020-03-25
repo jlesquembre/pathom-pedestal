@@ -5,12 +5,12 @@ clojars_auth := -Dclojars.password=`pass clojars | head -n 1`
 pom-deps:
 	clojure -Spom
 
-deploy:
+deploy: compile-viz
 	mvn release:prepare
 	git fetch
 	mvn $(clojars_auth) release:perform
 
-deploy-dry:
+deploy-dry: compile-viz
 	mvn release:prepare -DdryRun=true
 
 clean:

@@ -19,4 +19,4 @@
    :main-opts ["-m" "example.core"]
    :extra-deps
    {io.pedestal/pedestal.jetty   {:mvn/version "0.5.7"}
-    lafuente/pathom-pedestal     {:mvn/version "0.1.5-SNAPSHOT"}}}}}
+    lafuente/pathom-pedestal     {:mvn/version "0.1.6"}}}}}
