@@ -9,6 +9,12 @@ log follows the conventions of [keepachangelog.com](http://keepachangelog.com/).
 
 - Nothing
 
+## 0.1.7 - 2020-04-20
+
+### Changed
+
+- No changes, added GitHub action to automate releases
+
 ## 0.1.6 - 2020-03-25
 
 ### Changed
