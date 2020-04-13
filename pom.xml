@@ -32,4 +32,9 @@
     <tag>HEAD</tag>
   </scm>
 
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <sourceDirectory>resources</sourceDirectory>
+  </build>
+
 </project>
