@@ -34,7 +34,6 @@
 
   <build>
     <sourceDirectory>src</sourceDirectory>
-    <sourceDirectory>resources</sourceDirectory>
   </build>
 
 </project>
