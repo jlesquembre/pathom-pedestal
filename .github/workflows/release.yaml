@@ -1,5 +1,9 @@
 on:
   push:
+    paths:
+      - "src/**"
+      - "resources/**"
+      - "deps.edn"
     branches:
       - master
     tags:
